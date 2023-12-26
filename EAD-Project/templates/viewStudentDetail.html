@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Student Detail</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"/>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Student Detail</h1>
+        {% if pizza %}
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Roll Number</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Dob</th>
+                        <th>City</th>
+                        <th>Interest</th>
+                        <th>Department</th>
+                        <th>Degree</th>
+                        <th>Subject</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ pizza[0] }}</td>
+                        <td>{{ pizza[1] }}</td>
+                        <td>{{ pizza[2] }}</td>
+                        <td>{{ pizza[3] }}</td>
+                        <td>{{ pizza[4] }}</td>
+                        <td>{{ pizza[5] }}</td>
+                        <td>{{ pizza[6] }}</td>
+                        <td>{{ pizza[7] }}</td>
+                        <td>{{ pizza[8] }}</td>
+                        <td>{{ pizza[9] }}</td>
+                        <td>{{ pizza[10] }}</td>
+                        <td>{{ pizza[11] }}</td>
+                        <td>{{ pizza[12] }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <a href="{{ url_for('showall') }}" class="btn btn-primary">Back</a>
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                Record not found.
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bootstrap JS (place it at the bottom of the body) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

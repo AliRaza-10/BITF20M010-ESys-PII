@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Interest System</title>
+    <link rel="stylesheet" type="text/css" href="../static/form.css" />
+</head>
+<body>
+    <div id="buttons-container">
+        <a id="showData" href="/showall">Show All Students</a>
+        <a id="dashboard" href="/alih">Dashboard</a>
+        <a id="logoutLink" href="/logout">Logout</a>
+    </div>
+    <h2>Student Interest System</h2>
+    
+    <form action="/addInterest" method="POST">
+        <label for="rollNo">Roll No:</label>
+        <input type="text" id="rollNo" name="rollNo" required>
+
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="others">Others</option>
+        </select>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="city">City:</label>
+        <select id="city" name="city" required>
+            <option value="lahore">Lahore</option>
+            <option value="karachi">Karachi</option>
+            <option value="islamabad">Islamabad</option>
+            <option value="Gojra">Gojra</option>
+            <option value="Kasur">Kasur</option>
+            <option value="Pattoki">Pattoki</option>
+            <option value="Sahiwal">Sahiwal</option>
+            <option value="Rawalpidi">Rawalpidi</option>
+            <option value="Faisalabad">Faisalabad</option>
+            <option value="Multan">Multan</option>
+            <option value="Sialkot">Sialkot</option>
+            <option value="Gujranwala">Gujranwala</option>
+            <option value="Gujrat">Gujrat</option>
+            <option value="Sargodha">Sargodha</option>
+            <option value="Jhang">Jhang</option>
+        </select>
+
+        <label for="interest">Interest:</label>
+        <select id="interest" name="interest" required>
+            <option value="" disabled selected>Select or Enter Interest</option>
+            <option value="other">Other (Enter New Interest)</option>
+            {% for interest in interests %}
+                <option value="{{ interest }}">{{ interest }}</option>
+            {% endfor %}
+        </select>
+        
+        <input type="text" id="newInterest" name="newInterest" placeholder="Enter new interest" style="display: none;">
+
+        <script>
+            var interestDropdown = document.getElementById("interest");
+            var newInterestInput = document.getElementById("newInterest");
+
+            interestDropdown.addEventListener("change", function() {
+                newInterestInput.style.display = interestDropdown.value === "other" ? "inline-block" : "none";
+            });
+        </script>
+
+        <label for="department">Department:</label>
+        <select id="department" name="department" required>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Software Engineering">Software Engineering</option>
+            <option value="Information Technology">Information Technology</option>
+            <option value="Business Administration">Business Administration</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Accounting">Accounting</option>
+            <option value="Finance">Finance</option>
+            <option value="Economics">Economics</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Management">Management</option>
+            <option value="Human Resource">Human Resource</option>
+        </select>
+
+        <label for="degree">Degree Title:</label>
+        <select id="degree" name="degree" required>
+            <option value="Associate">Associate Degree</option>
+            <option value="Bachelor">Bachelor Degree</option>
+            <option value="Master">Master Degree</option>
+            <option value="Phd">Phd Degree</option>
+        </select>
+
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" required>
+
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required>
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
+
+        <input type="submit" value="Submit" id="submitt">
+    </form>
+
+    <h1>{{ error }}</h1>
+
+    <script>
+        var interestDropdown = document.getElementById("interest");
+        var newInterestInput = document.getElementById("newInterest");
+
+        interestDropdown.addEventListener("change", function() {
+            newInterestInput.style.display = interestDropdown.value === "other" ? "inline-block" : "none";
+        });
+    </script>
+
+    <!-- Add this script to your addStudent.html file -->
+    <script>
+        function recordUserActivity(activityType) {
+            // Make an asynchronous request to the /user_activity route
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/user_activity", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.send("activity_type=" + activityType);
+        }
+
+        // Attach the event listeners to the links
+        document.getElementById("showData").addEventListener("click", function() {
+            recordUserActivity("show");
+        });
+
+        document.getElementById("dashboard").addEventListener("click", function() {
+            recordUserActivity("dashboard");
+        });
+
+        document.getElementById("logoutLink").addEventListener("click", function() {
+            recordUserActivity("logout");
+        });
+
+        document.getElementById("submitt").addEventListener("click", function() {
+            recordUserActivity("submit");
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #ebebf5; /* Light gray background color */
+}
+
+.interest-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.interest-list li {
+  margin-right: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.top-interest {
+  background-color: green;
+  color: white;
+}
+
+.bottom-interest {
+  background-color: red;
+  color: white;
+}
+.count-box {
+  width: 100px; /* Adjust the width as needed */
+  height: 100px; /* Adjust the height as needed */
+  background-color: #ccc;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

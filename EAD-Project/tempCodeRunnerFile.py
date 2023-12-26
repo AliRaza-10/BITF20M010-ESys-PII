@@ -1,0 +1,1 @@
+activity_type = request.form.get('activity_type')

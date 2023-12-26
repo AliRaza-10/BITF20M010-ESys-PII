@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Include Moment.js for date formatting -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+
+    <!-- Include Chart.js with specific version -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    <link rel="stylesheet" type="text/css" href="../static/dashboard.css" />
+  </head>
+
+  <body>
+    <!-- <button onclick="goToHome()">Home</button> -->
+    <button onclick="goToHome()" style="background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-bottom: 20px; margin-top: 10px;">Home</button>
+
+    <h1 style="color: #007bff">Dashboard</h1>
+
+    <!-- Top 5 Interests -->
+    <div>
+      <h2 style="color: #007bff">Top 5 Interests</h2>
+      <ul class="interest-list">
+        {% for interest in top_interests %}
+        <li class="top-interest">{{ interest }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Bottom 5 Interests -->
+    <div>
+      <h2 style="color: #007bff">Bottom 5 Interests</h2>
+      <ul class="interest-list">
+        {% for interest in bottom_interests %}
+        <li class="bottom-interest">{{ interest }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Distinct Interests Count -->
+    <div style="margin-top: 20px">
+      <h2 style="color: #007bff">Distinct Interests Count</h2>
+      <div
+        class="count-box"
+        style="
+          background-color: #6c7279;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        "
+      >
+        <p
+          style="font-size: 42px; font-weight: bold; margin: 0; color: #12fa0a"
+        >
+          {{ distinct_interests_count }}
+        </p>
+      </div>
+    </div>
+    <!--Provincial Distribution-->
+    <div style="width: 300px; height: 300px">
+      <h2 style="color: #007bff">Provincial Distribution</h2>
+      <canvas id="provincialChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Fetch provincial distribution data from the server
+          fetch("/provincial_distribution_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Extract labels and data from the fetched data
+              var labels = data.map((item) => item.label);
+              var values = data.map((item) => item.count);
+
+              // Create a new pie chart with the retrieved data
+              var ctx = document
+                .getElementById("provincialChart")
+                .getContext("2d");
+              var provincialChart = new Chart(ctx, {
+                type: "pie",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      data: values,
+                      backgroundColor: [
+                        "rgba(255, 99, 132, 0.7)",
+                        "rgba(54, 162, 235, 0.7)",
+                        "rgba(255, 206, 86, 0.7)",
+                        "rgba(75, 192, 192, 0.7)",
+                        "rgba(153, 102, 255, 0.7)",
+                        "rgba(255, 159, 64, 0.7)",
+                        "rgba(46, 204, 113, 0.7)",
+                        "rgba(231, 76, 60, 0.7)",
+                        "rgba(52, 152, 219, 0.7)",
+                        "rgba(241, 196, 15, 0.7)",
+                        "rgba(149, 165, 166, 0.7)",
+                        "rgba(155, 89, 182, 0.7)",
+                        "rgba(26, 188, 156, 0.7)",
+                        "rgba(230, 126, 34, 0.7)",
+                        "rgba(41, 128, 185, 0.7)",
+                        "rgba(231, 76, 60, 0.7)",
+                        "rgba(0, 0, 0, 0.7)",
+                        "rgba(44, 62, 80, 0.7)",
+                        "rgba(230, 129, 52, 0.7)",
+                        "rgba(75, 119, 190, 0.7)",
+                      ],
+                    },
+                  ],
+                },
+                options: {
+                  responsive: false, // Set to false to prevent resizing
+                  maintainAspectRatio: false, // Set to false to adjust size based on canvas size
+                  layout: {
+                    padding: 10,
+                  },
+                  elements: {
+                    arc: {
+                      //
+                      borderWidth: 2,
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: "right",
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) =>
+              console.error(
+                "Error fetching provincial distribution data:",
+                error
+              )
+            );
+        });
+      </script>
+    </div>
+    <br /><br />
+    <!-- Submission Chart -->
+    <div style="width: 500px; height: 500px">
+      <h2 style="color: #007bff">Submission Chart</h2>
+      <canvas id="submissionChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/submission_chart_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Convert date strings to JavaScript Date objects
+              data.forEach((item) => {
+                item.date = new Date(item.date).toLocaleDateString(); // Format date as string
+              });
+
+              var labels = data.map((item) => item.date);
+              var values = data.map((item) => item.count);
+
+              var ctxSubmissionChart = document
+                .getElementById("submissionChart")
+                .getContext("2d");
+              var submissionChart = new Chart(ctxSubmissionChart, {
+                type: "line",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      label: "Submissions",
+                      data: values,
+                      borderColor: "rgba(75, 192, 192, 1)",
+                      borderWidth: 2,
+                      fill: false,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    x: {
+                      title: {
+                        display: true,
+                        text: "Date",
+                      },
+                    },
+                    y: {
+                      beginAtZero: true,
+                      title: {
+                        display: true,
+                        text: "Submissions",
+                      },
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching submission chart data:", error)
+            );
+        });
+      </script>
+    </div>
+    <br /><br />
+    <!-- Age Distribution -->
+    <div style="width: 500px; height: 500px">
+      <h2 style="color: #007bff">Age Distribution</h2>
+      <canvas id="ageDistributionChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          fetch("/age_distribution_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Sort the data array based on age in ascending order
+              data.sort((a, b) => a.age - b.age);
+
+              var labels = data.map((item) => item.age);
+              var values = data.map((item) => item.count);
+
+              var ctxAgeDistribution = document
+                .getElementById("ageDistributionChart")
+                .getContext("2d");
+              var ageDistributionChart = new Chart(ctxAgeDistribution, {
+                type: "bar",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      label: "Number of Students",
+                      data: values,
+                      backgroundColor: "rgba(75, 192, 192, 0.7)",
+                      borderWidth: 1,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                    },
+                    y: {
+                      beginAtZero: true,
+                    },
+                  },
+                },
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching age distribution data:", error)
+            );
+        });
+      </script>
+    </div>
+    <br />
+    <br />
+    <!-- Department Distribution -->
+    <div style="width: 400px; height: 500px">
+      <h2 style="color: #007bff">Department Distribution</h2>
+      <canvas id="departmentChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Fetch department distribution data from the server
+          fetch("/department_distribution_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Extract labels and data from the fetched data
+              var labels = data.map((item) => item.label);
+              var values = data.map((item) => item.count);
+
+              // Create a new pie chart with the retrieved data
+              var ctxDepartment = document
+                .getElementById("departmentChart")
+                .getContext("2d");
+              var departmentChart = new Chart(ctxDepartment, {
+                type: "pie",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      data: values,
+                      backgroundColor: [
+                        "rgba(255, 99, 132, 0.7)",
+                        "rgba(54, 162, 235, 0.7)",
+                        "rgba(255, 206, 86, 0.7)",
+                        "rgba(52, 152, 219, 0.7)", // Light Blue
+                        "rgba(241, 196, 15, 0.7)", // Yellow
+                        "rgba(149, 165, 166, 0.7)", // Gray
+                        "rgba(155, 89, 182, 0.7)", // Purple
+                        "rgba(26, 188, 156, 0.7)", // Turquoise
+                        "rgba(230, 126, 34, 0.7)", // Orange
+                        "rgba(41, 128, 185, 0.7)", // Dark Blue
+                        "rgba(231, 76, 60, 0.7)",
+                        "rgba(44, 62, 80, 0.7)", // Dark Gray
+                        "rgba(230, 129, 52, 0.7)", // Burnt Orange
+                        "rgba(75, 119, 190, 0.7)", // Steel Blue
+                        "rgba(0, 0, 0, 0.7)", // Black
+                      ],
+                    },
+                  ],
+                },
+              });
+            })
+            .catch((error) =>
+              console.error(
+                "Error fetching department distribution data:",
+                error
+              )
+            );
+        });
+      </script>
+    </div>
+    <!-- Degree Distribution -->
+    <div style="width: 400px; height: 500px">
+      <h2 style="color: #007bff">Degree Distribution</h2>
+      <canvas id="degreeChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Fetch department distribution data from the server
+          fetch("/degree_distribution_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Extract labels and data from the fetched data
+              var labels = data.map((item) => item.degree);
+              var values = data.map((item) => item.count);
+
+              // Create a new pie chart with the retrieved data
+              var ctxDepartment = document
+                .getElementById("degreeChart")
+                .getContext("2d");
+              var degreeChart = new Chart(ctxDepartment, {
+                type: "pie",
+                data: {
+                  labels: labels,
+                  datasets: [
+                    {
+                      data: values,
+                      backgroundColor: [
+                        "rgba(52, 152, 219, 0.7)", // Light Blue
+                        "rgba(241, 196, 15, 0.7)", // Yellow
+                        "rgba(149, 165, 166, 0.7)", // Gray
+                        "rgba(155, 89, 182, 0.7)", // Purple
+                        "rgba(26, 188, 156, 0.7)", // Turquoise
+                        "rgba(230, 126, 34, 0.7)", // Orange
+                        "rgba(41, 128, 185, 0.7)", // Dark Blue
+                        "rgba(231, 76, 60, 0.7)",
+                        "rgba(44, 62, 80, 0.7)", // Dark Gray
+                        "rgba(230, 129, 52, 0.7)", // Burnt Orange
+                        "rgba(75, 119, 190, 0.7)", // Steel Blue
+                        "rgba(0, 0, 0, 0.7)", // Black
+                        "rgba(255, 99, 132, 0.7)",
+                        "rgba(54, 162, 235, 0.7)",
+                        "rgba(255, 206, 86, 0.7)",
+                      ],
+                    },
+                  ],
+                },
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching degree distribution data:", error)
+            );
+        });
+      </script>
+    </div>
+    <!-- Gender Distribution -->
+    <div>
+      <h2 style="color: #007bff">Gender Distribution</h2>
+      <canvas id="genderDistributionChart"></canvas>
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          // Fetch gender distribution data from the server
+          fetch("/gender_distribution_data")
+            .then((response) => response.json())
+            .then((data) => {
+              // Extract labels and data from the fetched data
+              var genderLabels = data.map((item) => item.gender);
+              var genderValues = data.map((item) => item.count);
+
+              // Create a new pie chart with the retrieved data
+              var ctxGenderDistribution = document
+                .getElementById("genderDistributionChart")
+                .getContext("2d");
+              var genderDistributionChart = new Chart(ctxGenderDistribution, {
+                type: "pie",
+                data: {
+                  labels: genderLabels,
+                  datasets: [
+                    {
+                      data: genderValues,
+                      backgroundColor: [
+                        "rgba(44, 62, 80, 0.7)", // Dark Gray
+                        "rgba(230, 129, 52, 0.7)", // Burnt Orange
+                        "rgba(75, 119, 190, 0.7)",
+                      ], // Add more colors as needed
+                    },
+                  ],
+                },
+                options: {
+                  responsive: false,
+                  maintainAspectRatio: false,
+                  layout: {
+                    padding: 10,
+                  },
+                  elements: {
+                    arc: {
+                      borderWidth: 2,
+                    },
+                  },
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: "right",
+                    },
+                  },
+                  // Add more chart options as needed
+                },
+              });
+            })
+            .catch((error) =>
+              console.error("Error fetching gender distribution data:", error)
+            );
+        });
+      </script>
+    </div>
+      <!-- Last 30 Days Activity -->
+<br /><br />
+<div style="width: 500px; height: 500px">
+  <h2 style="color: #007bff">Last 30 Days Activity</h2>
+  <canvas id="last30DaysActivityChart"></canvas>
+  <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          fetch("/last_30_days_activity_data")
+              .then((response) => response.json())
+              .then((data) => {
+                  // Extract labels and data from the fetched data
+                  var labels = data.map((item) => item.date);
+                  var values = data.map((item) => item.count);
+
+                  // Set the Moment.js date adapter
+                  Chart.defaults.plugins.tooltip.callbacks.title = function (context) {
+                      return moment(context[0].label).format("YYYY-MM-DD");
+                  };
+
+                  // Create a new line chart with the retrieved data
+                  var ctxLast30DaysActivity = document.getElementById("last30DaysActivityChart").getContext("2d");
+                  var last30DaysActivityChart = new Chart(ctxLast30DaysActivity, {
+                      type: "line",
+                      data: {
+                          labels: labels,
+                          datasets: [{
+                              label: "Number of Actions",
+                              data: values,
+                              borderColor: "rgba(75, 192, 192, 1)",
+                              borderWidth: 2,
+                              fill: false,
+                          }],
+                      },
+                      options: {
+                          responsive: true,
+                          maintainAspectRatio: false,
+                      },
+                  });
+              })
+              .catch((error) =>
+                  console.error("Error fetching last 30 days activity data:", error)
+              );
+      });
+  </script>
+</div>
+<br /><br/>
+<!-- Last 24 Hours Activity Chart -->
+<div style="width: 500px; height: 300px">
+<h2 style="color: #007bff">Last 24 Hours Activity</h2>
+<canvas id="last24HoursActivityChart"></canvas>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("/last_24_hours_activity_data")
+    .then((response) => response.json())
+    .then((data) => {
+      if (!Array.isArray(data)) {
+        console.error("Invalid data format:", data);
+        return;
+      }
+
+      var labels = data.map((item) => moment(item.datetime_interval).format("YYYY-MM-DD HH:mm:ss"));
+      var values = data.map((item) => item.total_count);
+
+      if (!Array.isArray(labels) || !Array.isArray(values)) {
+        console.error("Invalid data format:", data);
+        return;
+      }
+
+      var ctxLast24HoursActivity = document.getElementById("last24HoursActivityChart").getContext("2d");
+
+      // Check if a chart already exists on this canvas
+      var existingChart = Chart.getChart(ctxLast24HoursActivity);
+      if (existingChart) {
+        // Destroy the existing chart
+        existingChart.destroy();
+      }
+
+      var last24HoursActivityChart = new Chart(ctxLast24HoursActivity, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Total Count",
+              data: values,
+              borderColor: "rgba(75, 192, 192, 0.7)",
+              borderWidth: 1,
+              fill: false,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              type: 'time',
+              time: {
+                unit: 'minute',
+                displayFormats: {
+                  minute: 'YYYY-MM-DD HH:mm:ss',
+                },
+              },
+            },
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+    })
+    .catch((error) =>
+      console.error("Error fetching last 24 hours activity data:", error)
+    );
+});
+</script>
+</div>
+<br /><br/>
+    <!-- Students Status Grid -->
+    <div style="margin-top: 20px">
+      <h2 style="color: #007bff">Students Status Grid</h2>
+      <table style="width: 50%; border-collapse: collapse; margin-top: 10px">
+        <tr>
+          <th style="border: 3px solid #0e0d0d; padding: 8px; text-align: left">
+            Student Status
+          </th>
+          <th style="border: 3px solid #0e0d0d; padding: 8px; text-align: left">
+            Count
+          </th>
+        </tr>
+        <tr>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">Studying</td>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            {{ studying_count }}
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            Recently Enrolled
+          </td>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            {{ recently_enrolled_count }}
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            About to Graduate
+          </td>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            {{ about_to_graduate_count }}
+          </td>
+        </tr>
+        <tr>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">Graduated</td>
+          <td style="border: 3px solid #0e0d0d; padding: 8px">
+            {{ graduated_count }}
+          </td>
+        </tr>
+      </table>
+    </div>
+<br />
+<!-- Most Active Hours in Last 30 Days -->
+<div>
+  <h2 style="color: #007bff">Most Active Hours in Last 30 Days</h2>
+  <ul id="mostActiveHoursList"></ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Fetch most active hours data from the server
+      fetch("/most_active_hours_last_30_days")
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data); // Log the received data to the console
+
+              // Display the data in the list
+              const mostActiveHoursList = document.getElementById("mostActiveHoursList");
+              data.forEach((hourData) => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${hourData.hour}:00 - ${hourData.activity_count} activities`;
+                  mostActiveHoursList.appendChild(listItem);
+              });
+          })
+          .catch((error) => console.error("Error fetching most active hours data:", error));
+  });
+</script>
+<br /><br/>
+<!-- Least Active Hours in Last 30 Days -->
+<div>
+  <h2 style="color: #007bff">Least Active Hours in Last 30 Days</h2>
+  <ul id="leastActiveHoursList"></ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Fetch least active hours data from the server
+      fetch("/least_active_hours_last_30_days")
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data); // Log the received data to the console
+
+              // Display the data in the list
+              const leastActiveHoursList = document.getElementById("leastActiveHoursList");
+              data.forEach((hourData) => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${hourData.hour} - ${hourData.activity_count} activities`;
+                  leastActiveHoursList.appendChild(listItem);
+              });
+          })
+          .catch((error) => console.error("Error fetching least active hours data:", error));
+  });
+</script>
+<!-- Dead Hours in Last 30 Days -->
+<div>
+  <h2 style="color: #007bff">Dead Hours in Last 30 Days</h2>
+  <ul id="deadHoursList"></ul>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      // Fetch dead hours data from the server
+      fetch("/dead_hours_last_30_days_data")
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data); // Log the received data to the console
+
+              // Display the data in the list
+              const deadHoursList = document.getElementById("deadHoursList");
+              data.forEach((hourData) => {
+                  const listItem = document.createElement("li");
+                  listItem.textContent = `${hourData.datetime_interval}`;
+                  deadHoursList.appendChild(listItem);
+              });
+          })
+          .catch((error) => console.error("Error fetching dead hours data:", error));
+  });
+</script>
+    
+    <script>
+      function goToHome() {
+        window.location.href = "/addStudent"; // Redirect to the addStudent route
+      }
+    </script>
+  </body>
+</html>

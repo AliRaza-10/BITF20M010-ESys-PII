@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="../static/update.css" />
+    <title>Update Record</title>
+  </head>
+
+  <body>
+    <h1>Update Record</h1>
+    <form method="POST">
+      <label for="rollNo">Roll No:</label>
+      <input
+        type="text"
+        id="rollNo"
+        name="rollNo"
+        value="{{ record[1] }}"
+        required
+      />
+
+      <label for="name">Name:</label>
+      <input
+        type="text"
+        id="name"
+        name="name"
+        value="{{ record[2] }}"
+        required
+      />
+
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="{{ record[3] }}"
+        required
+      />
+
+      <label for="gender">Gender:</label>
+      <input
+        type="text"
+        id="gender"
+        name="gender"
+        value="{{ record[4] }}"
+        required
+      />
+
+      <label for="dob">Date of Birth:</label>
+      <input type="text" id="dob" name="dob" value="{{ record[5] }}" required />
+
+      <label for="city">City:</label>
+      <input
+        type="text"
+        id="city"
+        name="city"
+        value="{{ record[6] }}"
+        required
+      />
+
+      <label for="interest">Interest:</label>
+      <input
+        type="text"
+        id="interest"
+        name="interest"
+        value="{{ record[7] }}"
+        required
+      />
+
+      <label for="department">Department:</label>
+      <input
+        type="text"
+        id="department"
+        name="department"
+        value="{{ record[8] }}"
+        required
+      />
+
+      <label for="degree">Degree:</label>
+      <input
+        type="text"
+        id="degree"
+        name="degree"
+        value="{{ record[9] }}"
+        required
+      />
+
+      <label for="subject">Subject:</label>
+      <input
+        type="text"
+        id="subject"
+        name="subject"
+        value="{{ record[10] }}"
+        required
+      />
+
+      <label for="startDate">Start Date:</label>
+      <input
+        type="text"
+        id="startDate"
+        name="startDate"
+        value="{{ record[11] }}"
+        required
+      />
+
+      <label for="endDate">End Date:</label>
+      <input
+        type="text"
+        id="endDate"
+        name="endDate"
+        value="{{ record[12] }}"
+        required
+      />
+
+      <input type="submit" value="Update" />
+    </form>
+  </body>
+</html>

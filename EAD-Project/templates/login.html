@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" type="text/css" href="static\style.css" />
+  </head>
+  <body>
+    <div class="box">
+      <h2>Login</h2>
+      <form action="/loggin" method="POST">
+        <div class="inputBox">
+          <input type="text" id="userName" name="uname" required="" />
+          <label>Username</label>
+        </div>
+        <div class="inputBox">
+          <input type="password" id="password" name="pwd" required="" />
+          <label>Password</label>
+        </div>
+        <button type="submit" value="login">Login</button>
+        <br /><br />
+        <div class="space"></div>
+        <a href="#" class="a" id="forgetPassword">Forget Password</a>
+    </form>
+    <h1>{{ error }}</h1>
+    </div>
+  </body>
+</html>
